@@ -13,4 +13,12 @@ public class HelloServiceImpl implements HelloService {
     public String sayHello(String name) {
         return  "Hello , " + name;
     }
+
+
+    private boolean testPrivate(){
+
+        System.out.println("this is a test ..");
+
+        return true;
+    }
 }
