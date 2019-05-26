@@ -1,4 +1,4 @@
-package com.lhd.security.util;
+package com.lhd.common.util;
 
 import java.util.List;
 import java.util.Map;

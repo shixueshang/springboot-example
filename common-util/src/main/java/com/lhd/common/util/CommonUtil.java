@@ -1,8 +1,6 @@
-package com.lhd.security.util;
+package com.lhd.common.util;
 
-import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 /**
  * Created by lihongde on 2018/06/15.
@@ -13,7 +11,7 @@ public class CommonUtil {
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
             return hex(md.digest(message.getBytes("CP1252")));
-        } catch (NoSuchAlgorithmException | UnsupportedEncodingException ignored) {
+        } catch (Exception e) {
         }
         return null;
     }

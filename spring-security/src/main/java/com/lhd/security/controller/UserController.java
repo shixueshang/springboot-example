@@ -1,11 +1,11 @@
 package com.lhd.security.controller;
 
+import com.lhd.common.util.AjaxJson;
+import com.lhd.common.util.CommonUtil;
 import com.lhd.security.config.JwtTokenUtil;
 import com.lhd.security.domain.User;
 import com.lhd.security.repository.UserRepository;
 import com.lhd.security.service.UserService;
-import com.lhd.security.util.AjaxJson;
-import com.lhd.security.util.CommonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;

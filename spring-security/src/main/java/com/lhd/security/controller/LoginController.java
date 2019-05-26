@@ -1,9 +1,8 @@
 package com.lhd.security.controller;
 
+import com.lhd.common.util.AjaxJson;
 import com.lhd.security.domain.User;
 import com.lhd.security.service.UserService;
-import com.lhd.security.util.AjaxJson;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 /**
  * Created by lihongde on 2018/06/15.
@@ -25,7 +26,7 @@ public class LoginController extends BaseController {
     @Value("${jwt.tokenHead}")
     private String tokenHead;
 
-    @Autowired
+    @Resource
     private UserService userService;
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
