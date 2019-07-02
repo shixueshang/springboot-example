@@ -1,14 +1,20 @@
 package com.lhd.shiro.controller;
 
+import com.lhd.shiro.entity.User;
+import com.lhd.shiro.service.UserService;
+import com.lhd.shiro.shiro.JwtToken;
 import com.lhd.shiro.util.JwtUtil;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
+import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
 
 /**
  * Created by xiaomi on 2019/05/22
@@ -18,26 +24,32 @@ public class LoginController {
 
     private final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
-    @GetMapping("/login")
-    public ResponseEntity<String> login(String username, String password){
+    @Resource
+    private UserService userService;
 
-        if(StringUtils.isEmpty(username)){
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody User user){
+
+        if(StringUtils.isEmpty(user.getUserName())){
             return new ResponseEntity<>("用户名不能为空", HttpStatus.BAD_REQUEST);
         }
 
-        if(StringUtils.isEmpty(password)){
+        if(StringUtils.isEmpty(user.getPassword())){
             return new ResponseEntity<>("密码不能为空", HttpStatus.BAD_REQUEST);
         }
 
-        String jwtToken;
+        String token;
         try {
+            Subject subject = SecurityUtils.getSubject();
             //认证成功生成token
-            jwtToken = JwtUtil.sign(username, password);
+            token = JwtUtil.sign(user.getUserName(), user.getPassword());
+            JwtToken jwtToken = new JwtToken(token);
+            subject.login(jwtToken);
         } catch (AuthenticationException e) {
-            logger.error("对用户[{}]进行登录验证,验证未通过", username, e);
+            logger.error("对用户[{}]进行登录验证,验证未通过", user.getUserName(), e);
             return new ResponseEntity<>("AuthenticationException", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(jwtToken, HttpStatus.OK);
+        return new ResponseEntity<>(token, HttpStatus.OK);
 
     }
 

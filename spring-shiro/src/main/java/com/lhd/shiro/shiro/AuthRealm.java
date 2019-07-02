@@ -41,6 +41,7 @@ public class AuthRealm extends AuthorizingRealm {
     }
 
     /**
+     * 调用subject.login(token)之后会调用该方法
      * 认证回调函数,登录时调用
      * 首先根据传入的用户名获取User信息；然后如果user为空，那么抛出没找到帐号异常UnknownAccountException；
      * 如果user找到但锁定了抛出锁定异常LockedAccountException；最后生成AuthenticationInfo信息，
@@ -56,7 +57,7 @@ public class AuthRealm extends AuthorizingRealm {
         String token = (String) authenticationToken.getCredentials();
         String userName = JwtUtil.getUserName(token);
         if (userName == null) {
-            throw new AuthenticationException("token无效");
+            throw new AuthenticationException("用户名无效");
         }
 
         User user = userService.findUserByName(userName);
@@ -69,11 +70,7 @@ public class AuthRealm extends AuthorizingRealm {
             throw new AuthenticationException("用户名或密码错误");
         }
 
-        SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(authenticationToken.getPrincipal(), user.getPassword(), getName());
-        Session session = SecurityUtils.getSubject().getSession();
-        session.setAttribute("USER_SESSION", user);
-
-        return authenticationInfo;
+        return new SimpleAuthenticationInfo(token, token, getName());
     }
 
     /**
