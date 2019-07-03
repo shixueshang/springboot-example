@@ -43,13 +43,6 @@ public class AuthRealm extends AuthorizingRealm {
     /**
      * 调用subject.login(token)之后会调用该方法
      * 认证回调函数,登录时调用
-     * 首先根据传入的用户名获取User信息；然后如果user为空，那么抛出没找到帐号异常UnknownAccountException；
-     * 如果user找到但锁定了抛出锁定异常LockedAccountException；最后生成AuthenticationInfo信息，
-     * 交给间接父类AuthenticatingRealm使用CredentialsMatcher进行判断密码是否匹配，
-     * 如果不匹配将抛出密码错误异常IncorrectCredentialsException；
-     * 另外如果密码重试此处太多将抛出超出重试次数异常ExcessiveAttemptsException；
-     * 在组装SimpleAuthenticationInfo信息时， 需要传入：身份信息（用户名）、凭据（密文密码）、盐（username+salt），
-     * CredentialsMatcher使用盐加密传入的明文密码和此处的密文密码进行匹配。
      */
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
@@ -81,7 +74,9 @@ public class AuthRealm extends AuthorizingRealm {
 
 
         Session session = SecurityUtils.getSubject().getSession();
-        User user = (User) session.getAttribute("USER_SESSION");
+        String username = JwtUtil.getUserName(principalCollection.toString());
+        User user = userService.findUserByName(username);
+
         // 权限信息对象info,用来存放查出的用户的所有的角色（role）及权限（permission）
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
         // 用户的角色集合

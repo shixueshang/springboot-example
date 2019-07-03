@@ -35,10 +35,6 @@ public class ShiroConfig {
         filterMap.put("jwt", new JWTFilter());
         shiroFilterFactoryBean.setFilters(filterMap);
 
-        shiroFilterFactoryBean.setLoginUrl("/login");
-        // 登录成功后要跳转的连接
-        shiroFilterFactoryBean.setSuccessUrl("/index");
-        shiroFilterFactoryBean.setUnauthorizedUrl("/denied");
         loadShiroFilterChain(shiroFilterFactoryBean);
         return shiroFilterFactoryBean;
     }
@@ -61,15 +57,10 @@ public class ShiroConfig {
     private void loadShiroFilterChain(ShiroFilterFactoryBean shiroFilterFactoryBean) {
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
 
-        //登陆操作走过滤器 进行shiro认证
         filterChainDefinitionMap.put("/login", "anon");
-
         filterChainDefinitionMap.put("/401", "anon");
         filterChainDefinitionMap.put("/404", "anon");
 
-        filterChainDefinitionMap.put("/resource/**", "anon");
-        filterChainDefinitionMap.put("/install", "anon");
-        filterChainDefinitionMap.put("/hello", "anon");
         filterChainDefinitionMap.put("/**", "jwt");
 
         Map<String, String> permissions = new LinkedHashMap<>();
