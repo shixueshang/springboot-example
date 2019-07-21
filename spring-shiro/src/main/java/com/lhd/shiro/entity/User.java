@@ -1,66 +1,45 @@
 package com.lhd.shiro.entity;
 
 
+import lombok.Data;
+
+import javax.persistence.*;
+
 /**
  * Created by xiaomi on 2019/05/19
  */
+@Data
+@Entity
 public class User {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "user_name", nullable = false, unique = true)
     private String userName;
 
+    @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
+    private String salt;
+
+    @Column(nullable = false)
     private String permission;
 
+    @Column(nullable = false)
     private boolean locked;
 
-    public User(Long id, String userName, String password, String permission, boolean locked){
-        this.id = id;
+    public User(String userName){
+        this.userName = userName;
+    }
+
+    public User(String userName, String password, String permission, boolean locked){
         this.userName = userName;
         this.password = password;
         this.permission = permission;
         this.locked = locked;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getPermission() {
-        return permission;
-    }
-
-    public void setPermission(String permission) {
-        this.permission = permission;
-    }
-
-    public boolean isLocked() {
-        return locked;
-    }
-
-    public void setLocked(boolean locked) {
-        this.locked = locked;
-    }
 }

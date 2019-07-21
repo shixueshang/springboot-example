@@ -1,10 +1,15 @@
 package com.lhd.shiro.controller;
 
+import com.lhd.common.util.CommonUtil;
+import com.lhd.shiro.entity.User;
+import com.lhd.shiro.service.UserService;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresRoles;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
 
 /**
  * Created by xiaomi on 2019/05/22
@@ -13,10 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/user")
 public class UserController {
 
-    @GetMapping("/get")
-    public String get() {
-        return "get.....";
-    }
+    @Resource
+    private UserService userService;
 
     /**
      * RequiresRoles 是所需角色 包含 AND 和 OR 两种
@@ -34,5 +37,15 @@ public class UserController {
     @GetMapping("/find")
     public String find() {
         return "find.....";
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<String> addUser(@RequestBody User user){
+
+        String salt = CommonUtil.createRandom(20, false);
+        user.setPassword(CommonUtil.md5(salt + user.getPassword()));
+        userService.saveUser(user);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

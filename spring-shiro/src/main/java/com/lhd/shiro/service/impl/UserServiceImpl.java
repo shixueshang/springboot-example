@@ -1,9 +1,13 @@
 package com.lhd.shiro.service.impl;
 
 import com.lhd.shiro.entity.User;
+import com.lhd.shiro.repository.UserRepository;
 import com.lhd.shiro.service.UserService;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.*;
 
 /**
@@ -12,16 +16,12 @@ import java.util.*;
 @Service
 public class UserServiceImpl implements UserService {
 
-
-    public static final Map<String, User> USERS_CACHE = new HashMap<>();
+    @Resource
+    private UserRepository userRepository;
 
     public static final Map<String, Collection<String>> PERMISSIONS_CACHE = new HashMap<>();
 
     static {
-        USERS_CACHE.put("u1", new User(1L, "u1", "p1", "admin", true));
-        USERS_CACHE.put("u2", new User(2L, "u2", "p2", "admin", false));
-        USERS_CACHE.put("u3", new User(3L, "u3", "p3", "test", true));
-
         PERMISSIONS_CACHE.put("admin", Arrays.asList("user:list", "user:add", "user:edit"));
         PERMISSIONS_CACHE.put("test", Collections.singletonList("user:list"));
 
@@ -29,6 +29,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findUserByName(String userName) {
-        return USERS_CACHE.get(userName);
+        User user = new User(userName);
+        Example<User> example = Example.of(user);
+        Optional<User> optional = userRepository.findOne(example);
+
+        return optional.isPresent() ? optional.get() : null;
+    }
+
+    @Override
+    @Transactional
+    public void saveUser(User user) {
+
+        userRepository.save(user);
     }
 }

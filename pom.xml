@@ -10,7 +10,6 @@
 
     <modules>
         <module>mongodb</module>
-        <module>spring-security</module>
         <module>sba</module>
         <module>dubbo-client</module>
         <module>dubbo-server</module>
@@ -82,9 +81,14 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.38</version>
+            <version>8.0.12</version>
         </dependency>
 
         <dependency>

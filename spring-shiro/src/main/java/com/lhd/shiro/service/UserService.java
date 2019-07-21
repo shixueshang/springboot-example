@@ -9,4 +9,6 @@ import com.lhd.shiro.entity.User;
 public interface UserService {
 
     User findUserByName(String userName);
+
+    void saveUser(User user);
 }
