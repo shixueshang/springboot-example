@@ -1,16 +1,14 @@
 package com.lhd.common.util;
 
-import java.util.List;
-import java.util.Map;
+import lombok.Data;
 
 /**
- * Created by lihongde on 2018/06/15.
+ * Created by xiaomi on 2018/06/15.
  */
+@Data
 public class AjaxJson {
 
     private int code;
-    private List<Map<String, Object>> list;
-    private Map<String, Object> map;
     private String message = "";
     private Object data;
 
@@ -20,16 +18,6 @@ public class AjaxJson {
 
     public AjaxJson(int code) {
         this.code = code;
-    }
-
-    public AjaxJson(int code, List<Map<String, Object>> list) {
-        this.code = code;
-        this.list = list;
-    }
-
-    public AjaxJson(int code, Map<String, Object> map) {
-        this.code = code;
-        this.map = map;
     }
 
     public AjaxJson(int code, String message) {
@@ -42,43 +30,33 @@ public class AjaxJson {
         this.data = data;
     }
 
-    public int getCode() {
-        return code;
-    }
-
-    public void setCode(int code) {
-        this.code = code;
-    }
-
-    public Object getData() {
-        return data;
-    }
-
-    public void setData(Object data) {
+    public AjaxJson(Object data) {
         this.data = data;
     }
 
-    public String getMessage() {
-        return message;
+    private AjaxJson(CodeMessage codeMsg) {
+        if(codeMsg != null) {
+            this.code = codeMsg.getCode();
+            this.message = codeMsg.getMsg();
+        }
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    /**
+     *  成功时候的调用
+     * */
+    public static AjaxJson success(Object data){
+        return new AjaxJson(data);
     }
 
-    public List<Map<String, Object>> getList() {
-        return list;
+    public static AjaxJson success(CodeMessage codeMsg){
+        return new AjaxJson(codeMsg);
     }
 
-    public void setList(List<Map<String, Object>> list) {
-        this.list = list;
+    /**
+     *  失败时候的调用
+     * */
+    public static AjaxJson error(CodeMessage codeMsg){
+        return new AjaxJson(codeMsg);
     }
 
-    public Map<String, Object> getMap() {
-        return map;
-    }
-
-    public void setMap(Map<String, Object> map) {
-        this.map = map;
-    }
 }

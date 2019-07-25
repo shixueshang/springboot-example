@@ -1,11 +1,17 @@
 package com.lhd.common.util;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.security.MessageDigest;
+import java.util.UUID;
 
 /**
  * Created by lihongde on 2018/06/15.
  */
 public class CommonUtil {
+
+    private static Logger logger = LogManager.getLogger(CommonUtil.class);
 
     private static final String DEFAULT_ENCODING = "UTF-8";
 
@@ -18,6 +24,7 @@ public class CommonUtil {
             MessageDigest md = MessageDigest.getInstance("MD5");
             return hex(md.digest(text.getBytes(encoding)));
         } catch (Exception e) {
+            logger.error("encrpted error", e);
         }
         return null;
     }
@@ -51,6 +58,14 @@ public class CommonUtil {
         return retStr;
     }
 
+    public static boolean isMobile(String mobile){
+        return mobile != null && mobile.matches("1\\d{10}");
+    }
+
+    public static String getUuid(){
+        return UUID.randomUUID().toString().replaceAll("-", "");
+    }
+
     private static String hex(byte[] array) {
         StringBuilder sb = new StringBuilder();
         for (byte anArray : array) {
@@ -58,4 +73,5 @@ public class CommonUtil {
         }
         return sb.toString();
     }
+
 }

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" monitorInterval="30">
+    <Properties>
+        <Property name="logPath">/usr/local/logs/miaosha</Property>
+    </Properties>
+    <appenders>
+        <console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss:SSS}-%t] [%p] - %l - %m%n"/>
+        </console>
+        <RollingFile name="RollingFileInfo" fileName="${logPath}/info.log" filePattern="${logPath}/info_%d{yyyy-MM-dd}.log">
+            <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss:SSS}-%t] [%p] - %l - %m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+            </Policies>
+        </RollingFile>
+
+
+    </appenders>
+    <loggers>
+        <logger name="org.springframework" level="INFO">
+        </logger>
+        <logger name="org.elasticsearch" level="INFO">
+        </logger>
+        <logger name="org.mybatis" level="INFO">
+        </logger>
+
+        <!-- 将业务mapper接口填写进去,并用控制台输出即可 -->
+        <logger name="cn.ctoedu.miaosha.mapper" level="error" additivity="false">
+            <appender-ref ref="Console"/>
+            <appender-ref ref="RollingFileInfo"/>
+        </logger>
+
+        <root level="info">
+            <appender-ref ref="Console"/>
+            <appender-ref ref="RollingFileInfo"/>
+        </root>
+    </loggers>
+
+</configuration>
