@@ -186,6 +186,12 @@ public class MiaoshaController implements InitializingBean {
         return AjaxJson.success(result);
     }
 
+    /**
+     *
+     * 重置所有秒杀数据
+     * @param model
+     * @return
+     */
     @RequestMapping(value = "/reset", method = RequestMethod.GET)
     @ResponseBody
     public AjaxJson reset(Model model) {
