@@ -39,7 +39,6 @@ public class LoginController {
     @PostMapping("/do_login")
     @ResponseBody
     public AjaxJson doLogin(HttpServletResponse response, @Valid LoginVo loginVo) {
-        logger.info(loginVo.toString());
         String token = userService.login(response, loginVo);
         return AjaxJson.success(token);
     }

@@ -7,7 +7,6 @@ import cn.ctoedu.miaosha.mapper.OrderMapper;
 import cn.ctoedu.miaosha.redis.OrderKey;
 import cn.ctoedu.miaosha.redis.RedisService;
 import cn.ctoedu.miaosha.vo.GoodsVo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,7 +22,7 @@ public class OrderService {
     @Resource
     OrderMapper orderMapper;
 
-    @Autowired
+    @Resource
     RedisService redisService;
 
     public MiaoshaOrder getMiaoshaOrderByUserIdGoodsId(long userId, long goodsId) {

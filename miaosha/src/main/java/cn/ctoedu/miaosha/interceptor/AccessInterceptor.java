@@ -34,20 +34,20 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if(handler instanceof HandlerMethod) {
+        if (handler instanceof HandlerMethod) {
             User user = getUser(request, response);
             UserContext.setUser(user);
-            HandlerMethod hm = (HandlerMethod)handler;
+            HandlerMethod hm = (HandlerMethod) handler;
             AccessLimit accessLimit = hm.getMethodAnnotation(AccessLimit.class);
-            if(accessLimit == null) {
+            if (accessLimit == null) {
                 return true;
             }
             int seconds = accessLimit.seconds();
             int maxCount = accessLimit.maxCount();
             boolean needLogin = accessLimit.needLogin();
             String key = request.getRequestURI();
-            if(needLogin) {
-                if(user == null) {
+            if (needLogin) {
+                if (user == null) {
                     render(response, CodeMessage.SESSION_ERROR);
                     return false;
                 }
@@ -55,11 +55,11 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
             }
             AccessKey ak = AccessKey.withExpire(seconds);
             Integer count = redisService.get(ak, key, Integer.class);
-            if(count  == null) {
+            if (count == null) {
                 redisService.set(ak, key, 1);
-            }else if(count < maxCount) {
+            } else if (count < maxCount) {
                 redisService.incr(ak, key);
-            }else {
+            } else {
                 render(response, CodeMessage.ACCESS_LIMIT_REACHED);
                 return false;
             }
@@ -67,10 +67,10 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
         return true;
     }
 
-    private void render(HttpServletResponse response, CodeMessage cm)throws Exception {
+    private void render(HttpServletResponse response, CodeMessage cm) throws Exception {
         response.setContentType("application/json;charset=UTF-8");
         OutputStream out = response.getOutputStream();
-        String str  = JSON.toJSONString(AjaxJson.error(cm));
+        String str = JSON.toJSONString(AjaxJson.error(cm));
         out.write(str.getBytes("UTF-8"));
         out.flush();
         out.close();
@@ -79,20 +79,20 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
     private User getUser(HttpServletRequest request, HttpServletResponse response) {
         String paramToken = request.getParameter(UserService.COOKI_NAME_TOKEN);
         String cookieToken = getCookieValue(request, UserService.COOKI_NAME_TOKEN);
-        if(StringUtils.isEmpty(cookieToken) && StringUtils.isEmpty(paramToken)) {
+        if (StringUtils.isEmpty(cookieToken) && StringUtils.isEmpty(paramToken)) {
             return null;
         }
-        String token = StringUtils.isEmpty(paramToken)?cookieToken:paramToken;
+        String token = StringUtils.isEmpty(paramToken) ? cookieToken : paramToken;
         return userService.getByToken(response, token);
     }
 
     private String getCookieValue(HttpServletRequest request, String cookiName) {
-        Cookie[]  cookies = request.getCookies();
-        if(cookies == null || cookies.length <= 0){
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null || cookies.length <= 0) {
             return null;
         }
-        for(Cookie cookie : cookies) {
-            if(cookie.getName().equals(cookiName)) {
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals(cookiName)) {
                 return cookie.getValue();
             }
         }

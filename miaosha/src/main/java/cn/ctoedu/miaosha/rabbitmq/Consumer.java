@@ -23,9 +23,6 @@ public class Consumer {
     private static Logger log = LogManager.getLogger(Consumer.class);
 
     @Autowired
-    RedisService redisService;
-
-    @Autowired
     GoodsService goodsService;
 
     @Autowired
@@ -36,7 +33,7 @@ public class Consumer {
 
     @RabbitListener(queues = MQConfig.MIAOSHA_QUEUE)
     public void receive(String message) {
-        log.info("receive message:" + message);
+        log.info("receive message : {}" , message);
         MiaoshaMessage mm = RedisService.stringToBean(message, MiaoshaMessage.class);
         User user = mm.getUser();
         long goodsId = mm.getGoodsId();
