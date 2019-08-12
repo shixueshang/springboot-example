@@ -5,6 +5,7 @@ import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.*;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
@@ -19,7 +20,7 @@ import java.util.*;
  */
 public class HttpClientUtils {
 
-    private static final String ENCODING = "UTF-8";
+    private static final String DEFAULT_ENCODING = "UTF-8";
 
     // 设置连接超时时间，单位毫秒。
     private static final int CONNECT_TIMEOUT = 6000;
@@ -136,6 +137,32 @@ public class HttpClientUtils {
         }
     }
 
+    public static String doPostWithJson(String url, String jsonData) throws Exception {
+        return doPostWithJson(url, jsonData, null);
+    }
+
+    public static String doPostWithJson(String url, String jsonData, Map<String, String> headers) throws Exception {
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+
+        HttpPost httpPost = new HttpPost(url);
+        RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(CONNECT_TIMEOUT).setSocketTimeout(SOCKET_TIMEOUT).build();
+        packageHeader(headers, httpPost);
+
+        // 解决中文乱码问题
+        StringEntity stringEntity = new StringEntity(jsonData, DEFAULT_ENCODING);
+        stringEntity.setContentEncoding(DEFAULT_ENCODING);
+
+        httpPost.setEntity(stringEntity);
+
+        CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
+
+        try {
+            return getHttpClientResult(httpResponse, httpClient);
+        } finally {
+            release(httpResponse, httpClient);
+        }
+    }
+
     /**
      * 发送put请求；不带请求参数
      *
@@ -238,7 +265,7 @@ public class HttpClientUtils {
                 nvps.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
             }
 
-            httpMethod.setEntity(new UrlEncodedFormEntity(nvps, ENCODING));
+            httpMethod.setEntity(new UrlEncodedFormEntity(nvps, DEFAULT_ENCODING));
         }
     }
 
@@ -255,7 +282,7 @@ public class HttpClientUtils {
         if (httpResponse != null && httpResponse.getStatusLine() != null) {
             String content = "";
             if (httpResponse.getEntity() != null) {
-                content = EntityUtils.toString(httpResponse.getEntity(), ENCODING);
+                content = EntityUtils.toString(httpResponse.getEntity(), DEFAULT_ENCODING);
             }
             return content;
         }
